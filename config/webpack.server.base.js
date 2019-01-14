@@ -9,7 +9,9 @@ const { stringified } = require('./env')();
 module.exports = {
   name: 'server',
   target: 'node',
-  entry: [`${paths.srcServer}/index.js`],
+  entry: {
+    main: [`${paths.srcServer}/index.js`]
+  },
   externals: [
     nodeExternals({
       whitelist: [

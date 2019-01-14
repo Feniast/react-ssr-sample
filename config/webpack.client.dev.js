@@ -5,6 +5,9 @@ const baseConfig = require('./webpack.client.base');
 const merge = require('webpack-merge');
 
 const config = merge({}, baseConfig, {
+  entry: {
+    main: ['webpack-hot-middleware/client?path=/__webpack_hmr&reload=true']
+  },
   mode: 'development',
   devtool: 'cheap-module-source-map',
   plugins: [

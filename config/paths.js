@@ -10,6 +10,7 @@ const envPublicPath = process.env.PUBLIC_URL;
 
 const paths = {
     packageJson: resolveApp('package.json'),
+    build: resolveApp('build'),
     clientBuild: resolveApp('build/client'),
     serverBuild: resolveApp('build/server'),
     dotenv: resolveApp('.env'),

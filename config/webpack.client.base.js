@@ -4,9 +4,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 const { ReactLoadablePlugin } = require('react-loadable/webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const paths = require('./paths');
-const loaders = require('./loaders').clientLoaders;
-
 const { raw, stringified } = require('./env')();
+const loaders = require('./loaders').clientLoaders;
 
 const isEnvProduction = process.env.NODE_ENV === 'production';
 
@@ -26,7 +25,9 @@ const ensureSlash = (inputPath, needsSlash) => {
 module.exports = {
   name: 'client',
   target: 'web',
-  entry: [`${paths.srcClient}/index.js`],
+  entry: {
+    main: [`${paths.srcClient}/index.js`]
+  },
   output: {
     path: paths.clientBuild,
     filename: '[name].bundle.js',
@@ -46,7 +47,7 @@ module.exports = {
     new ReactLoadablePlugin({
       filename: `build/react-loadable.json` // could not resursive mkdir because of the plugin code
     }),
-    new ManifestPlugin({ fileName: 'asset-manifest.json' })
+    new ManifestPlugin({ fileName: `${paths.build}/asset-manifest.json` })
   ],
   optimization: {
     minimize: isEnvProduction,
