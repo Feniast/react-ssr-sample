@@ -5,6 +5,8 @@ import Helmet from 'react-helmet';
 import * as metadata from './common/metadata';
 import routes from './routes';
 
+import './index.scss';
+
 const App = () => {
   return (
     <div className="app">

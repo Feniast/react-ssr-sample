@@ -11,6 +11,7 @@ import App from '../shared/App';
 import routes from '../shared/routes';
 import configureStore from '../shared/store';
 import stats from '../../dist/react-loadable.json';
+import renderHTML from './renderHtml';
 
 const fetchData = (store, pathname) => {
   const branch = matchRoutes(routes, pathname);
@@ -23,16 +24,7 @@ const fetchData = (store, pathname) => {
   return Promise.all(promises);
 };
 
-const renderHTML = ({
-  state,
-  helmet,
-  markup,
-  bundles
-}) => {
-
-}
-
-const render = (req, res, store) => {
+const handleRequest = (req, res, store) => {
   const context = {};
   const modules = [];
 
@@ -48,6 +40,8 @@ const render = (req, res, store) => {
 
   if (context.status) {
     res.status(context.status);
+  } else {
+    res.status(200);
   }
 
   if (context.url) {
@@ -61,7 +55,7 @@ const render = (req, res, store) => {
       helmet: helmetData,
       bundles
     });
-    res.status(200).send(html);
+    res.send(html);
   }
 };
 
@@ -70,7 +64,7 @@ const renderApp = (req, res) => {
 
   Loadable.preloadAll()
     .then(() => fetchData(store, req.url))
-    .then(() => render(req, res, store));
+    .then(() => handleRequest(req, res, store));
 };
 
 export default renderApp;
