@@ -32,10 +32,10 @@ dotenvFiles.forEach(dotenvFile => {
 
 
 function getClientEnvironment() {
-  const version = require(paths.packageJson).version;
+  const version = require('../package.json').version;
   const raw = {
     NODE_ENV: process.env.NODE_ENV || 'development',
-    PUBLIC_URL: process.env.PUBLIC_URL,
+    PUBLIC_URL: process.env.PUBLIC_URL || '/',
     VERSION: version
   };
   // Stringify all values so we can feed into Webpack DefinePlugin

@@ -1,42 +1,63 @@
+/* eslint-disable no-console */
 const webpack = require('webpack');
 const nodemon = require('nodemon');
 const rimraf = require('rimraf');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
-const express = require('express');
+const { log, commonWebpackHandler } = require('./utils');
 const paths = require('../config/paths');
-// const { logMessage, compilerPromise } = require('./utils');
-const clientConfig = require('../config/webpack.client.dev');
 const serverConfig = require('../config/webpack.server.dev');
 
-const start = async () => {
-  const app = express();
-  const port = process.env.DEV_PORT || 4000;
-
-  const webpackCompiler = webpack([clientConfig, serverConfig]);
-
-  const clientCompiler = webpackCompiler.compilers.find((compiler) => compiler.name === 'client');
-  const serverCompiler = webpackCompiler.compilers.find((compiler) => compiler.name === 'server');
-  
-  app.use(webpackDevMiddleware(clientCompiler, {
-    hot: true,
-    publicPath: clientConfig.output.publicPath,
-    progress: true,
-    stats: {
-      colors: true,
-      assets: true,
-      chunks: false,
-      modules: false,
-      hash: false
-    }
-  }));
-
-  app.use(webpackHotMiddleware(clientCompiler), {
-    path: '/__webpack_hmr'
+const startServer = () => {
+  const serverNodemon = nodemon({
+    watch: paths.serverBuild,
+    script: `${paths.serverBuild}/server.js`
   });
 
-  app.use(paths.publicPath, express.static(paths.clientBuild));
+  serverNodemon.on('restart', () => {
+    log.warn('Server side app has been restarted.');
+  });
 
+  serverNodemon.on('quit', () => {
+    log('Process ended');
+    process.exit();
+  });
+
+  serverNodemon.on('error', () => {
+    log.error('An error occured. Exiting');
+    process.exit(1);
+  });
+
+  return serverNodemon;
 }
+
+const start = async () => {
+  rimraf.sync(paths.build);
+
+  const serverCompiler = webpack(serverConfig);
+
+  let serverBuildHash = '';
+  let serverProcess = null;
+  const serverWatching = serverCompiler.watch(
+    {
+      ignored: /node_modules/
+    },
+    (err, stats) => {
+      if (serverBuildHash === stats.hash) {
+        return;
+      }
+      serverBuildHash = stats.hash;
+      const serverBuildResult = commonWebpackHandler(err, stats);
+      if (!serverBuildResult) return;
+      if (serverProcess != null) return;
+      serverProcess = startServer();
+    }
+  );
+
+  ['SIGINT', 'SIGTERM'].forEach(function(sig) {
+    process.on(sig, function() {
+      serverWatching.close();
+      process.exit();
+    });
+  });
+};
 
 start();

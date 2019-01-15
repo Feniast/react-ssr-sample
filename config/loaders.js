@@ -107,13 +107,14 @@ const clientLoaders = [
 ];
 
 const cssLoaderServer = {
-  ...cssLoader,
-  use: 'css-loader/locals' // use client build
+  test: /\.(css|sass|scss)$/,
+  exclude: cssModuleRegex,
+  use: 'null-loader' // use client build
 };
 
 const cssModuleLoaderServer = {
-  ...cssModuleLoader,
-  use: 'css-loader/locals' // use client build
+  test: cssModuleRegex,
+  use: 'null-loader' // use client build
 };
 
 const imgLoaderServer = {
@@ -153,6 +154,9 @@ const serverLoaders = [
     ]
   }
 ];
+/* 
+exports.clientLoaders = clientLoaders;
+exports.serverLoaders = serverLoaders; */
 
 module.exports = {
   clientLoaders,

@@ -4,7 +4,11 @@ const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const baseConfig = require('./webpack.client.base');
 const merge = require('webpack-merge');
 
-const config = merge({}, baseConfig, {
+const config = merge.smartStrategy(
+  {
+    entry: 'prepend'
+  }
+)({}, baseConfig, {
   entry: {
     main: ['webpack-hot-middleware/client?path=/__webpack_hmr&reload=true']
   },

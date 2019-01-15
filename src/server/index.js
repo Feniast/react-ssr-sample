@@ -1,9 +1,20 @@
-import express from 'express';
-import Loadable from 'react-loadable';
+const express = require('express');
+const Loadable = require('react-loadable');
+const renderApp = require('./renderApp').default;
+
+require('dotenv').config();
+
+const isDev = process.env.NODE_ENV === 'development';
 
 const app = express();
 
-const port = process.env.NODE_PORT || 3000;
+if (isDev) {
+  require('./dev')(app);
+}
+
+app.use(renderApp);
+
+const port = process.env.PORT || 3000;
 
 /* eslint-disable no-console */
 Loadable.preloadAll().then(() => {
@@ -11,10 +22,8 @@ Loadable.preloadAll().then(() => {
     if (err) {
       console.error(err);
       process.exit(1);
-    } else {
-      console.info(
-        `Server running on port ${port}`
-      );
+      return;
     }
-  })
-})
+    console.info(`Server running on port ${port}`);
+  });
+});

@@ -4,7 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const { ReactLoadablePlugin } = require('react-loadable/webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const paths = require('./paths');
-const { raw, stringified } = require('./env')();
+const { stringified } = require('./env')();
 const loaders = require('./loaders').clientLoaders;
 
 const isEnvProduction = process.env.NODE_ENV === 'production';
@@ -32,7 +32,7 @@ module.exports = {
     path: paths.clientBuild,
     filename: '[name].bundle.js',
     chunkFilename: '[name].chunk.js',
-    publicPath: ensureSlash(raw.PUBLIC_URL, true)
+    publicPath: ensureSlash(paths.publicPath, true)
   },
   module: {
     rules: loaders
@@ -40,14 +40,17 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin(stringified),
     new webpack.DefinePlugin({
-      '__SERVER__': 'false',
-      '__CLIENT__': 'true'
+      __SERVER__: 'false',
+      __CLIENT__: 'true'
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ReactLoadablePlugin({
       filename: `build/react-loadable.json` // could not resursive mkdir because of the plugin code
     }),
-    new ManifestPlugin({ fileName: `${paths.build}/asset-manifest.json` })
+    new ManifestPlugin({
+      fileName: `${paths.build}/asset-manifest.json`,
+      writeToFileEmit: true
+    })
   ],
   optimization: {
     minimize: isEnvProduction,
@@ -55,40 +58,40 @@ module.exports = {
       new TerserPlugin({
         terserOptions: {
           parse: {
-            ecma: 8,
+            ecma: 8
           },
           compress: {
             ecma: 5,
             warnings: false,
             comparisons: false,
-            inline: 2,
+            inline: 2
           },
           mangle: {
-            safari10: true,
+            safari10: true
           },
           output: {
             ecma: 5,
             comments: false,
-            ascii_only: true,
-          },
+            ascii_only: true
+          }
         },
         parallel: true,
         cache: true,
-        sourceMap: shouldUseSourceMap,
+        sourceMap: shouldUseSourceMap
       }),
-      new OptimizeCSSAssetsPlugin(),
+      new OptimizeCSSAssetsPlugin()
     ],
     splitChunks: {
       chunks: 'all',
-      name: false,
+      name: false
     },
-    runtimeChunk: true,
+    runtimeChunk: true
   },
   node: {
     dgram: 'empty',
     fs: 'empty',
     net: 'empty',
     tls: 'empty',
-    child_process: 'empty',
+    child_process: 'empty'
   }
-}
+};

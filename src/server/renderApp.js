@@ -10,8 +10,17 @@ import { getBundles } from 'react-loadable/webpack';
 import App from '../shared/App';
 import routes from '../shared/routes';
 import configureStore from '../shared/store';
-import stats from '../../dist/react-loadable.json';
 import renderHTML from './renderHtml';
+
+const { fileContentWatcher } = require('./utils'); 
+
+const reactLoadableStatsPath =
+  process.env.LOADABLE_STATS ||
+  `${require('path').resolve(process.cwd(), './build/react-loadable.json')}`;
+
+const getStats = fileContentWatcher(reactLoadableStatsPath, JSON.parse, { 
+  once: process.env.NODE_ENV !== 'development'
+});
 
 const fetchData = (store, pathname) => {
   const branch = matchRoutes(routes, pathname);
@@ -48,7 +57,7 @@ const handleRequest = (req, res, store) => {
     res.redirect(context.url);
   } else {
     const helmetData = Helmet.renderStatic();
-    const bundles = getBundles(stats, modules);
+    const bundles = getBundles(getStats(), modules);
     const html = renderHTML({
       state: store.getState(),
       markup,
