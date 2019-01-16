@@ -6460,6 +6460,11 @@ react-is@^16.3.2, react-is@^16.5.2, react-is@^16.6.3:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.7.0.tgz#c1bd21c64f1f1364c6f70695ec02d69392f41bfa"
   integrity sha512-Z0VRQdF4NPDoI0tsXVMLkJLiwEBa+RP66g0xDHxgxysxSoCUccSten4RTF/UFvZF1dZvZ9Zu1sx+MDXwcOR34g==
 
+react-loadable-ssr-addon@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/react-loadable-ssr-addon/-/react-loadable-ssr-addon-0.1.6.tgz#de3e45f2b3876dc7b9afae19138370f0588b7300"
+  integrity sha512-D/Du+YH9EI77CoogenWU0F/EmHjJH2K3B9lH29yF1mcHOpFKccCObZ2P7CHdV0DqhPiXdw6URAioaSf10mYkPw==
+
 react-loadable@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/react-loadable/-/react-loadable-5.5.0.tgz#582251679d3da86c32aae2c8e689c59f1196d8c4"

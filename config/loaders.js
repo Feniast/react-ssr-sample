@@ -1,4 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const paths = require('./paths');
 const generateSourceMap = process.env.GENERATE_SOURCEMAP === 'true';
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -106,15 +107,38 @@ const clientLoaders = [
   }
 ];
 
+const babelLoaderServer = {
+  test: /\.(js|jsx)$/,
+  include: [paths.src],
+  use: 'babel-loader'
+};
+
 const cssLoaderServer = {
   test: /\.(css|sass|scss)$/,
   exclude: cssModuleRegex,
-  use: 'null-loader' // use client build
+  use: 'null-loader'
 };
 
 const cssModuleLoaderServer = {
   test: cssModuleRegex,
-  use: 'null-loader' // use client build
+  use: [
+    {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 1,
+        camelCase: true,
+        modules: true,
+        localIdentName: '[name]__[local]--[hash:base64:5]',
+        exportOnlyLocals: true // used in server-side
+      }
+    },
+    {
+      loader: 'sass-loader',
+      options: {
+        includePaths: ['./node_modules']
+      }
+    }
+  ]
 };
 
 const imgLoaderServer = {
@@ -146,7 +170,7 @@ const fontLoaderServer = {
 const serverLoaders = [
   {
     oneOf: [
-      babelLoader,
+      babelLoaderServer,
       cssModuleLoaderServer,
       cssLoaderServer,
       imgLoaderServer,
@@ -154,9 +178,6 @@ const serverLoaders = [
     ]
   }
 ];
-/* 
-exports.clientLoaders = clientLoaders;
-exports.serverLoaders = serverLoaders; */
 
 module.exports = {
   clientLoaders,

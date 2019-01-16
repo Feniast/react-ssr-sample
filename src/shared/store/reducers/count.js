@@ -1,4 +1,4 @@
-import { INCREMENT, DECREMENT } from '../actions/count';
+import { INCREMENT, DECREMENT, SET } from '../actions/count';
 import { handleActions } from 'redux-actions';
 
 const initialState = {
@@ -19,6 +19,12 @@ const handlers = {
       ...state,
       count: state.count - dec
     }
+  },
+  [SET]: (state, action) => {
+    return {
+      ...state,
+      count: action.payload || 0
+    };
   }
 };
 

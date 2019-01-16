@@ -5,7 +5,7 @@ import { StaticRouter } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import { matchRoutes } from 'react-router-config';
 import Helmet from 'react-helmet';
-import { getBundles } from 'react-loadable/webpack';
+import { getBundles } from 'react-loadable-ssr-addon';
 
 import App from '../shared/App';
 import routes from '../shared/routes';
@@ -16,7 +16,7 @@ const { fileContentWatcher } = require('./utils');
 
 const reactLoadableStatsPath =
   process.env.LOADABLE_STATS ||
-  `${require('path').resolve(process.cwd(), './build/react-loadable.json')}`;
+  `${require('path').resolve(process.cwd(), './build/react-loadable-ssr-addon.json')}`;
 
 const getStats = fileContentWatcher(reactLoadableStatsPath, JSON.parse, { 
   once: process.env.NODE_ENV !== 'development'
@@ -25,20 +25,28 @@ const getStats = fileContentWatcher(reactLoadableStatsPath, JSON.parse, {
 const fetchData = (store, pathname) => {
   const branch = matchRoutes(routes, pathname);
 
-  const promises = branch.map(({ route, match }) => {
-    const fetchData = route.component.fetchData;
+  const promises = branch.map(async ({ route, match }) => {
+    let component;
+    // handle react-loadable component
+    if (route.component.preload) {
+      component = (await route.component.preload()).default;
+    } else {
+      component = route.component;
+    }
+    if (!component) return Promise.resolve(null);
+    const fetchData = component.fetchData;
     return fetchData ? fetchData(store, match) : Promise.resolve(null);
   });
 
   return Promise.all(promises);
 };
 
-const handleRequest = (req, res, store) => {
+const render = (req, res, store) => {
   const context = {};
-  const modules = [];
+  const modules = new Set();
 
   const markup = ReactDOMServer.renderToString(
-    <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+    <Loadable.Capture report={moduleName => modules.add(moduleName)}>
       <Provider store={store}>
         <StaticRouter location={req.url} context={context}>
           <App />
@@ -57,7 +65,9 @@ const handleRequest = (req, res, store) => {
     res.redirect(context.url);
   } else {
     const helmetData = Helmet.renderStatic();
-    const bundles = getBundles(getStats(), modules);
+    const stats = getStats();
+    // https://github.com/themgoncalves/react-loadable-ssr-addon/issues/6
+    const bundles = getBundles(stats, [...Array.from(modules), ...stats.entrypoints]);
     const html = renderHTML({
       state: store.getState(),
       markup,
@@ -73,7 +83,7 @@ const renderApp = (req, res) => {
 
   Loadable.preloadAll()
     .then(() => fetchData(store, req.url))
-    .then(() => handleRequest(req, res, store));
+    .then(() => render(req, res, store));
 };
 
 export default renderApp;

@@ -1,6 +1,7 @@
 import Loadable from 'react-loadable';
 import Loading from './components/Loading';
 import Home from './views/Home';
+import Profile from './views/Profile';
 
 const About = Loadable({
   loader: () => import('./views/About'),
@@ -27,6 +28,10 @@ const routes = [
     component: Count,
     exact: true,
     path: '/count'
+  },
+  {
+    component: Profile,
+    path: '/profile/:name'
   }
 ];
 

@@ -7,6 +7,8 @@ import routes from './routes';
 
 import './index.scss';
 
+import commonStyles from './styles/common.module.scss';
+
 const App = () => {
   return (
     <div className="app">
@@ -18,12 +20,17 @@ const App = () => {
         noscript={metadata.noscript}
       />
       <nav>
-        <NavLink exact to="/" activeClassName="active">
-          Home
-        </NavLink>
-        <NavLink exact to="/about" activeClassName="active">
-          About
-        </NavLink>
+        <ul className={commonStyles.navList}>
+          <li className={commonStyles.navItem}>
+            <NavLink exact to="/" className={commonStyles.navLink} activeClassName={commonStyles.navLinkActive}>Home</NavLink>
+          </li>
+          <li className={commonStyles.navItem}>
+            <NavLink exact to="/about" className={commonStyles.navLink} activeClassName={commonStyles.navLinkActive}>About</NavLink>
+          </li>
+          <li className={commonStyles.navItem}>
+            <NavLink exact to="/count" className={commonStyles.navLink} activeClassName={commonStyles.navLinkActive}>Count</NavLink>
+          </li>
+        </ul>
       </nav>
       <div className="main">{renderRoutes(routes)}</div>
     </div>

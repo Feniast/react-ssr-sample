@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const baseConfig = require('./webpack.client.base');
 const merge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -15,7 +16,8 @@ const config = merge({}, baseConfig, {
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash:8].css',
       chunkFilename: '[name].[contenthash:8].chunk.css',
-    })
+    }),
+    new webpack.HashedModuleIdsPlugin()
   ]
 });
 

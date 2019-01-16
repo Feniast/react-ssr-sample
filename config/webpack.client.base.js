@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const { ReactLoadablePlugin } = require('react-loadable/webpack');
+const ReactLoadableSSRAddon = require('react-loadable-ssr-addon');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const paths = require('./paths');
 const { stringified } = require('./env')();
@@ -44,8 +44,8 @@ module.exports = {
       __CLIENT__: 'true'
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new ReactLoadablePlugin({
-      filename: `build/react-loadable.json` // could not resursive mkdir because of the plugin code
+    new ReactLoadableSSRAddon({
+      filename: `${paths.build}/react-loadable-ssr-addon.json`,
     }),
     new ManifestPlugin({
       fileName: `${paths.build}/asset-manifest.json`,

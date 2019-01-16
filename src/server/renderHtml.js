@@ -34,7 +34,7 @@ const cssLinks = () => {
 
   const assetManifest = assetManifestGetter();
 
-  return Object.keys(assetManifestGetter())
+  return Object.keys(assetManifest)
     .filter(file => file.match(/\.css$/))
     .map(cssFile => assetManifest[cssFile])
     .map(cssFilePath => `<link rel="stylesheet" href="${cssFilePath}">`)
@@ -42,12 +42,13 @@ const cssLinks = () => {
 };
 
 const jsScripts = bundles => {
-  const mainJS = assetManifestGetter()['main.js'];
+  const mainChunk = assetManifestGetter()['main.js'];
+  const runtimeChunk = assetManifestGetter()['runtime~main.js'];
   const bundleFilePaths = bundles
     .filter(bundle => bundle.file.match(/\.js$/))
     .map(jsBundle => `${publicUrl}/${jsBundle.file}`);
 
-  return [...bundleFilePaths, mainJS, assetManifestGetter()['runtime~main.js']]
+  return [runtimeChunk, ...bundleFilePaths, mainChunk]
     .map(
       jsFilePath =>
         `<script type="text/javascript" src="${jsFilePath}"></script>`
@@ -59,27 +60,31 @@ const renderHTML = ({ state, helmet, markup, bundles }) => {
   const htmlAttrs = helmet.htmlAttributes.toString();
   const bodyAttrs = helmet.bodyAttributes.toString();
 
+  const stylesheets = bundles.css || [];
+  const scripts = bundles.js || [];
+
   return `
     <!doctype html>
     <html lang="en" ${htmlAttrs}>
       <head>
         ${helmet.title.toString()}
         ${helmet.meta.toString()}
-        ${preloadScripts(bundles)}
         ${helmet.link.toString()}
-        ${cssLinks()}
+        ${stylesheets.map(stylesheet => {
+          return `<link href="${stylesheet.publicPath}" rel="stylesheet" />`;
+        }).join('\n')}
         ${helmet.style.toString()}
         ${helmet.script.toString()}
         ${helmet.noscript.toString()}
       </head>
       <body ${bodyAttrs}>
         <div id="root">${markup}</div>
-
         <script>
           window.__PRELOADED_STATE__ = ${serialize(state)}
         </script>
-
-        ${jsScripts(bundles)}
+        ${scripts.map(script => {
+          return `<script src="${script.publicPath}"></script>`
+        }).join('\n')}
       </body>
     </html>
   `;
