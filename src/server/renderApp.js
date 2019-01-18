@@ -11,16 +11,11 @@ import App from '../shared/App';
 import routes from '../shared/routes';
 import configureStore from '../shared/store';
 import renderHTML from './renderHtml';
+import stats from '../../build/react-loadable-ssr-addon.json';
 
-const { fileContentWatcher } = require('./utils'); 
-
-const reactLoadableStatsPath =
-  process.env.LOADABLE_STATS ||
-  `${require('path').resolve(process.cwd(), './build/react-loadable-ssr-addon.json')}`;
-
-const getStats = fileContentWatcher(reactLoadableStatsPath, JSON.parse, { 
-  once: process.env.NODE_ENV !== 'development'
-});
+const getStats = () => {
+  return stats || {};
+}
 
 const fetchData = (store, pathname) => {
   const branch = matchRoutes(routes, pathname);

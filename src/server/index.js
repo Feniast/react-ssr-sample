@@ -1,22 +1,28 @@
+/* eslint-disable no-console */
+const isDev = process.env.NODE_ENV === 'development';
+if (isDev) {
+  require('./dev/babel-transform');
+  require('./dev/purge-cache');
+}
+
 const express = require('express');
 const Loadable = require('react-loadable');
-const renderApp = require('./renderApp').default;
 
 require('dotenv').config();
-
-const isDev = process.env.NODE_ENV === 'development';
 
 const app = express();
 
 if (isDev) {
-  require('./dev')(app);
+  require('./dev/configure-app')(app);
 }
 
-app.use(renderApp);
+app.get('*', function (req, res) {
+  // must require here to not use cache when in development
+  require('./renderApp').default(req, res);
+});
 
 const port = process.env.PORT || 3000;
 
-/* eslint-disable no-console */
 Loadable.preloadAll().then(() => {
   app.listen(port, err => {
     if (err) {

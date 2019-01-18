@@ -22,6 +22,15 @@ const ensureSlash = (inputPath, needsSlash) => {
   }
 };
 
+// fix "Cannot read property 'integrity' of undefined" after chunk change 
+(function patchReactLoadableSSRAddon() {
+  const _getAssets = ReactLoadableSSRAddon.prototype.getAssets;
+  ReactLoadableSSRAddon.prototype.getAssets = function(...args) {
+    this.assetsByName.clear();
+    _getAssets.apply(this, args);
+  }
+})();
+
 module.exports = {
   name: 'client',
   target: 'web',

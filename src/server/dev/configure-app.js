@@ -2,10 +2,11 @@ const webpack = require('webpack');
 const express = require('express');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
-const paths = require('../../config/paths');
-const clientWebpackConfig = require('../../config/webpack.client.dev');
+const paths = require('../../../config/paths');
+const clientWebpackConfig = require('../../../config/webpack.client.dev');
 
-// some dirty jobs here
+// some dirty work here
+// of course, this kind of things should not be used in production env
 const configureApp = (app) => {
   if (app == null) return;
   const compiler = webpack(clientWebpackConfig);
