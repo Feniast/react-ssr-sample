@@ -3,6 +3,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const ReactLoadableSSRAddon = require('react-loadable-ssr-addon');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const paths = require('./paths');
 const { stringified } = require('./env')();
 const loaders = require('./loaders').clientLoaders;
@@ -59,7 +60,8 @@ module.exports = {
     new ManifestPlugin({
       fileName: `${paths.build}/asset-manifest.json`,
       writeToFileEmit: true
-    })
+    }),
+    new CopyWebpackPlugin([paths.public])
   ],
   optimization: {
     minimize: isEnvProduction,

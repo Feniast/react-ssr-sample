@@ -14,11 +14,13 @@ const app = express();
 
 if (isDev) {
   require('./dev/configure-app')(app);
+} else {
+  require('./configure-app')(app);
 }
 
-app.get('*', function (req, res) {
+app.get('*', function (req, res, next) {
   // must require here to not use cache when in development
-  require('./renderApp').default(req, res);
+  require('./renderApp').default(req, res, next);
 });
 
 const port = process.env.PORT || 3000;
