@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`About Views Test should render correctly 1`] = `
+<div>
+  <HelmetWrapper
+    defer={true}
+    encodeSpecialCharacters={true}
+    title="Count"
+  />
+  <h1
+    className="title"
+  >
+    Count
+  </h1>
+  <div>
+    <p
+      className="count"
+    >
+      Count: 
+      1
+    </p>
+    <p>
+      Double Count: 
+      2
+    </p>
+  </div>
+  <button
+    className="btn-plus"
+    onClick={
+      [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": undefined,
+          },
+        ],
+      }
+    }
+  >
+    +
+  </button>
+  <button
+    className="btn-minus"
+    onClick={
+      [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": undefined,
+          },
+        ],
+      }
+    }
+  >
+    -
+  </button>
+</div>
+`;

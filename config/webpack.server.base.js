@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const paths = require('./paths');
 const loaders = require('./loaders').serverLoaders;
-
 const { stringified } = require('./env')();
 
 module.exports = {

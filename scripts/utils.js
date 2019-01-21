@@ -11,20 +11,6 @@ const log = (message, level = 'info') => {
   log[level] = (message) => log(message, level);
 });
 
-const compilerPromise = (name, compiler) => {
-  return new Promise((resolve, reject) => {
-    compiler.hooks.compile.tap(name, () => {
-      log(`[${name}] Compiling `);
-    });
-    compiler.hooks.done.tap(name, stats => {
-      if (!stats.hasErrors()) {
-        return resolve();
-      }
-      return reject(`Failed to compile ${name}`);
-    });
-  });
-};
-
 const commonWebpackHandler = (err, stats) => {
   if (err) {
     log.error(err.stack || err);
@@ -50,6 +36,5 @@ const commonWebpackHandler = (err, stats) => {
 
 module.exports = {
   log,
-  compilerPromise,
   commonWebpackHandler
 };

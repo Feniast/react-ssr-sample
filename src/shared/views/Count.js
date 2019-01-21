@@ -6,7 +6,7 @@ import { countSelector, doubleCountSelector } from '../store/selectors/count';
 import { increment, decrement, set } from '../store/actions/count';
 import styles from '../styles/common.module.scss';
 
-class Count extends React.Component {
+export class Count extends React.Component {
   static fetchData = (store) => {
     store.dispatch(set(~~(Math.random() * 100)));
   }
@@ -25,11 +25,11 @@ class Count extends React.Component {
         <Helmet title="Count"></Helmet>
         <h1 className={styles.title}>Count</h1>
         <div>
-          <p>Count: {count}</p>
+          <p className="count">Count: {count}</p>
           <p>Double Count: {doubleCount}</p>
         </div>
-        <button onClick={increment}>+</button>
-        <button onClick={decrement}>-</button>
+        <button className="btn-plus" onClick={increment}>+</button>
+        <button className="btn-minus" onClick={decrement}>-</button>
       </div>
     );
   }

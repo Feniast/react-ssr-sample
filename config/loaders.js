@@ -97,20 +97,32 @@ const fontLoader = {
 
 const clientLoaders = [
   {
-    oneOf: [
-      babelLoader,
-      cssModuleLoader,
-      cssLoader,
-      imgLoader,
-      fontLoader
-    ]
+    oneOf: [babelLoader, cssModuleLoader, cssLoader, imgLoader, fontLoader]
   }
 ];
 
 const babelLoaderServer = {
   test: /\.(js|jsx)$/,
   include: [paths.src],
-  use: 'babel-loader'
+  use: [
+    {
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          [
+            '@babel/preset-env',
+          ],
+          '@babel/preset-react'
+        ],
+        plugins: [
+          'react-loadable/babel',
+          '@babel/plugin-proposal-class-properties',
+          '@babel/plugin-proposal-object-rest-spread',
+          'dynamic-import-node'
+        ]
+      }
+    }
+  ]
 };
 
 const cssLoaderServer = {
@@ -129,7 +141,7 @@ const cssModuleLoaderServer = {
         camelCase: true,
         modules: true,
         localIdentName: '[name]__[local]--[hash:base64:5]',
-        exportOnlyLocals: true // used in server-side
+        exportOnlyLocals: true // used in server-side, support by css-loader v2
       }
     },
     {
