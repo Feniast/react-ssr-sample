@@ -135,7 +135,7 @@ const cssModuleLoaderServer = {
   test: cssModuleRegex,
   use: [
     {
-      loader: 'css-loader/locals', // for css-loader v1, use 'css-loader' when css-loader is v2
+      loader: 'css-loader',
       options: {
         importLoaders: 1,
         camelCase: true,

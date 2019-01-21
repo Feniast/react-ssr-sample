@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const paths = require('./paths');
 const loaders = require('./loaders').serverLoaders;
+const { stringified } = require('./env')();
 
 module.exports = {
   name: 'server',
@@ -28,6 +29,7 @@ module.exports = {
     rules: loaders
   },
   plugins: [
+    new webpack.DefinePlugin(stringified),
     new webpack.DefinePlugin({
       __SERVER__: 'true',
       __CLIENT__: 'false'

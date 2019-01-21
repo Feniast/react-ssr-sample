@@ -13,7 +13,9 @@ require('@babel/register')({
       {
         camelCase: true,
         extensions: ['.css', '.scss'],
-        generateScopedName: '[name]__[local]--[hash:base64:5]',
+        generateScopedName: require('generic-names')('[name]__[local]--[hash:base64:5]', {
+          context: process.cwd()
+        }),
         preprocessCss: require('./sass-loader.js')
       }
     ],
