@@ -74,7 +74,9 @@ const render = (req, res, store) => {
 };
 
 const renderApp = (req, res) => {
-  const store = configureStore();
+  const { store } = configureStore({
+    url: req.url
+  });
 
   Loadable.preloadAll()
     .then(() => fetchData(store, req.url))
